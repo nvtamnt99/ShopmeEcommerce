@@ -89,9 +89,12 @@ public class NguoiDungExcelExporter extends AbstractExporter{
 			createCell(row, columnIndex++, user.getHo(), cellStyle);
 			createCell(row, columnIndex++, user.getTen(), cellStyle);
 			createCell(row, columnIndex++, user.getPhanquyen().toString(), cellStyle);
-			createCell(row, columnIndex++, user.isTrangThai(), cellStyle);
 			
-			
+			if (user.isTrangThai() == true) {
+				createCell(row, columnIndex++, String.valueOf("Hoạt động"), cellStyle);
+			} else {
+				createCell(row, columnIndex++, String.valueOf("Ngưng"), cellStyle);
+			}
 		}
 		
 	}

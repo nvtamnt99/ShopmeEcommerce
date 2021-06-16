@@ -89,8 +89,12 @@ public class KhachhangExcelExporter extends AbstractExporter{
 			createCell(row, columnIndex++, kh.getHo(), cellStyle);
 			createCell(row, columnIndex++, kh.getTen(), cellStyle);
 			createCell(row, columnIndex++, kh.getNgaytao(), cellStyle);
-			createCell(row, columnIndex++, kh.isTrangThai(), cellStyle);
 			
+			if (kh.isTrangThai() == true) {
+				createCell(row, columnIndex++, String.valueOf("Hoạt động"), cellStyle);
+			} else {
+				createCell(row, columnIndex++, String.valueOf("Ngưng"), cellStyle);
+			}
 			
 		}
 		
