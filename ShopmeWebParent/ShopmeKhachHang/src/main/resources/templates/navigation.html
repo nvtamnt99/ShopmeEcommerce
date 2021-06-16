@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<body>
+	<div th:fragment="header_menu">
+		<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+			<th:block sec:authorize="isAuthenticated()">
+				<form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
+					<input type="submit" value="Logout" />
+				</form>
+			</th:block>
+			<a class="navbar-brand" th:href="@{/}">
+				<img th:src="@{${SITE_LOGO}}" style=" display: block; width: auto;" />
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbar, #searchNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			&emsp;
+			<div class="collapse navbar-collapse" id="topNavbar">
+				<ul class="navbar-nav mr-auto">
+					<th:block sec:authorize="isAnonymous()">
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/dangnhap}"><i class="fas fa-sign-out-alt"></i>
+								Đăng nhập
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/dangky}"><i class="fas fa-user-plus"></i>
+								Đăng ký
+							</a>
+						</li>
+					</th:block>
+					<th:block sec:authorize="isAuthenticated()">
+						<li class="nav-item">
+							<b>
+								<a class="nav-link" th:href="@{/chitiettaikhoan}"
+									sec:authentication="principal.hoTen"></a>
+							</b>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/khachhang/diachi}">
+								<i class="fas fa-map-marker-alt"></i>
+								Địa chỉ</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/}">
+								<i class="fas fa-comments"></i>
+								Hỏi đáp</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/}">
+								<i class="fas fa-tag"></i>
+								Khuyến mãi</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/khachhang/donhang}">
+								<i class="fas fa-receipt"></i>
+								Đơn hàng</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/giohang}">
+								<i class="fas fa-shopping-cart"></i>
+								Giỏ hàng</a>
+						</li>
+					</th:block>
+					<th:block sec:authorize="isAuthenticated()">
+						<li class="nav-item">
+							<a class="nav-link" href="javascript: document.logoutForm.submit()"><i class="fas fa-sign-out-alt"></i>
+								Đăng xuất
+							</a>
+						</li>
+					</th:block>
+				</ul>
+				<form th:action="@{/search}" method="get" class="form-inline">
+					<input type="search" name="keyword" class="form-control mr-sm-2" th:value="${keyword}"
+						placeholder="Tìm kiếm sản phẩm" required />
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
+				</form>
+			</div>
+		</nav>
+	</div>
+
+	<div th:fragment="search_nav" class="row">
+		<div class="col-md">
+			<nav class="navbar navbar-expand-sm bg-light">
+				<div class="collapse navbar-collapse" id="searchNavbar">
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/carrier_cellphones}"><i class="fas fa-tablet"></i>
+								Điện thoại di động
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/laptop_computers}"><i class="fas fa-laptop"></i>
+								Laptop
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/tablet_computers}"><i class="fas fa-tablet-alt"></i>
+								Tablet
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/microsd_cards}"><i class="fas fa-sd-card"></i>
+								Thẻ nhớ
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/desktop_computers}"><i class="fas fa-desktop"></i>
+								PC và Máy tính
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/digital_cameras}"><i class="fas fa-camera"></i>
+								Máy ảnh & máy quay phim
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/headphones}"><i class="fas fa-headphones-alt"></i>
+								Tai nghe
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/computer_processors}"><i class="far fa-hdd"></i>
+								CPU
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/cellphone_cases}"><i class="fas fa-suitcase"></i>
+								Ốp lưng
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/hard_drive}"><i class="far fa-hdd"></i>
+								Ổ cứng
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/c/computer_power_supplies}"><i class="fas fa-fan"></i>
+								Quạt tản nhiệt
+							</a>
+						</li>
+						
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+
+	<div th:fragment="deliver_date(date)" th:remove="tag">
+		<span th:text="${#dates.format(date, 'E, dd MMM yyyy')}">Deliver date</span>
+</div>
+
+<div th:fragment="format_time(dateTime)" th:remove="tag">
+	<span th:text="${#dates.format(dateTime, 'yyyy-MM-dd HH:mm:ss')}">Date Time</span>
+</div>
+
+<div th:fragment="currency_format(amount)" th:remove="tag">
+	<span th:if="${CURRENCY_SYMBOL_POSITION == 'Before price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+	[[${#numbers.formatDecimal(amount, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]
+	<span th:if="${CURRENCY_SYMBOL_POSITION == 'After price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+</div>
+<div th:fragment="discountPrice(amount)" th:remove="tag">
+	<span th:style="${amount > 0 ? 'font-size: larger; color: darkred' : ''}">				
+		<span th:if="${CURRENCY_SYMBOL_POSITION == 'Before price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>[[${#numbers.formatDecimal(amount, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]<span th:if="${CURRENCY_SYMBOL_POSITION == 'After price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+	</span>
+</div>
+<div th:fragment="listPrice(amount)" th:remove="tag">
+	<del>
+		<span th:if="${CURRENCY_SYMBOL_POSITION == 'Before price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>[[${#numbers.formatDecimal(amount, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]<span th:if="${CURRENCY_SYMBOL_POSITION == 'After price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+	</del>	
+</div>
+<div th:fragment="currency_input(amount)" th:remove="tag">
+	<input type="text" readonly class="form-control" th:value="${(currencySymbolPosition == 'before' ? currencySymbol : '') + 
+	#numbers.formatDecimal(amount, 1, thousandsPointType, decimalDigits, decimalPointType) + 
+	(currencySymbolPosition == 'after' ? currencySymbol : '')}">
+</div>	
+<div th:fragment="footer_menu">
+	<div>
+		<!-- Footer -->
+		<footer class="bg-dark text-center text-white">
+	<!-- Grid container -->
+			<div class="container p-4">
+	  <!-- Section: Social media -->
+	  			<section class="mb-4">
+		<!-- Facebook -->
+		<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+		  ><i class="fab fa-facebook-f"></i
+		></a>
+  
+		<!-- Twitter -->
+		<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+		  ><i class="fab fa-twitter"></i
+		></a>
+  
+		<!-- Google -->
+		<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+		  ><i class="fab fa-google"></i
+		></a>
+  
+		<!-- Instagram -->
+		<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+		  ><i class="fab fa-instagram"></i
+		></a>
+  
+		<!-- Linkedin -->
+		<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+		  ><i class="fab fa-linkedin-in"></i
+		></a>
+  
+		<!-- Github -->
+		<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+		  ><i class="fab fa-github"></i
+		></a>
+	  </section>
+	  <!-- Section: Social media -->
+  
+	  <!-- Section: Form -->
+	  <section class="">
+		<form action="">
+		  <!--Grid row-->
+		  <div class="row d-flex justify-content-center">
+			<!--Grid column-->
+			<div class="col-auto">
+			  <p class="pt-2">
+				<strong>Đăng ký nhận bản tin của chúng tôi</strong>
+			  </p>
+			</div>
+			<!--Grid column-->
+  
+			<!--Grid column-->
+			<div class="col-md-5 col-12">
+			  <!-- Email input -->
+			  <div class="form-outline form-white mb-4">
+				<input type="email" id="form5Example2" class="form-control" />
+				<label class="form-label" for="form5Example2">Địa chỉ mail</label>
+			  </div>
+			</div>
+			<!--Grid column-->
+  
+			<!--Grid column-->
+			<div class="col-auto">
+			  <!-- Submit button -->
+			  <button type="submit" class="btn btn-outline-light mb-4">
+				Đăng ký
+			  </button>
+			</div>
+			<!--Grid column-->
+		  </div>
+		  <!--Grid row-->
+		</form>
+	  </section>
+  
+	  <!-- Section: Text -->
+	  <section class="mb-4">
+		<p>
+			Shopme - ứng dụng mua sắm trực tuyến thú vị, tin cậy, an toàn và miễn phí! Shopme 
+			là nền tảng giao dịch trực tuyến hàng đầu ở Đông Nam Á, 
+			Việt Nam, Singapore, Malaysia, Indonesia, Thái Lan, Philipin, Đài loan và Brazil. 
+			Với sự đảm bảo của Shopme, bạn sẽ mua hàng trực tuyến an tâm và nhanh chóng hơn bao giờ hết!
+		</p>
+	  </section>
+  
+	  <!-- Section: Links -->
+	  <section class="">
+		<!--Grid row-->
+		<div class="row">
+		  <!--Grid column-->
+		  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+			<h5 class="text-uppercase">Chăm sóc khách hàng</h5>
+  
+			<ul class="list-unstyled mb-0">
+			  <li>
+				<a href="#!" class="text-white">Trung tâm trợ giúp</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Shopme Blog</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Shopme Mall</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Hướng dẫn mua hàng</a>
+			  </li>
+			</ul>
+		  </div>
+		  <!--Grid column-->
+  
+		  <!--Grid column-->
+		  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+			<h5 class="text-uppercase">Về Shopme</h5>
+  
+			<ul class="list-unstyled mb-0">
+			  <li>
+				<a href="#!" class="text-white">Giới thiệu Shopme Việt Nam</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Tuyển dụng</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Điều khoản Shopme</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Chính sách bảo mật</a>
+			  </li>
+			</ul>
+		  </div>
+		  <!--Grid column-->
+		  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+			<h5 class="text-uppercase">Thanh toán qua</h5>
+  
+			<ul class="list-unstyled mb-0">
+			  <li>
+				<a class="btn btn-floating m-1" role="button">
+					<i class="fa fa-cc-visa" style="font-size:17px"></i>
+				</a>
+				<a class="btn btn-floating m-1" role="button">
+					<i class="fa fa-cc-mastercard" style="font-size:17px"></i>
+				</a>
+			  </li>
+			  <li>
+				<a class="btn btn-floating m-1" role="button">
+					<i class="fa fa-credit-card" style="font-size:17px"></i>
+				</a>
+				<a class="btn btn-floating m-1" role="button">
+					<i class="fa fa-cc-stripe" style="font-size:17px"></i>
+				</a>
+			  </li>
+			</ul>
+		  </div>
+		  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+			<h5 class="text-uppercase">Theo dõi chúng tôi qua</h5>
+  
+			<ul class="list-unstyled mb-0">
+			  <li>
+				<a href="#!" class="text-white">Facebook</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Twitter</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">Instagram</a>
+			  </li>
+			  <li>
+				<a href="#!" class="text-white">TikTok</a>
+			  </li>
+			</ul>
+		  </div>
+		</div>
+	  </section>
+	</div>
+	<div th:fragment="footer" class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+	  <a class="text-white" href="https://mdbootstrap.com/"><p>[[${COPYRIGHT}]]</p></a>
+	</div>
+  </footer>
+	</div>
+	<!--<div th:fragment="footer" class="text-center m-3" style="background-color: rgba(0, 0, 0, 0.2);">
+		<p>[[${COPYRIGHT}]]</p>
+	</div>	-->
+</div>
+<div th:fragment="standard_modal" class="modal fade text-center" id="myModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="modalTitle">Cảnh báo</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+	
+			<div class="modal-body">
+				<span id="modalBody"></span>
+			</div>
+	
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:fragment="search_form_and_message(url)" th:remove="tag">
+		<div>
+			<form th:action="@{${url}}" class="form-inline m-3">
+				<input type="hidden" name="sortField" th:value="${sortField}" />
+				<input type="hidden" name="sortDir" th:value="${sortDir}" />
+				Lọc đơn hàng: &nbsp;<input type="search" name="keyword" th:value="${keyword}" class="form-control" placeholder="Keyword" required />
+				&nbsp;&nbsp;
+				<input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+				&nbsp;&nbsp;
+				<input type="button" value="Xóa" class="btn btn-secondary" onclick="clearFilter()" />
+			</form>
+		</div>
+		<div th:if="${message != null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>	
+</div>
+<div th:fragment="pagination(itemName, baseURL)" th:remove="tag">		
+	<div class="text-center m-1" th:if="${totalItems > 0}">
+		<span>Hiển thị [[${itemName}]] # [[${startCount}]] từ [[${endCount}]] tới [[${totalItems}]]</span>
+	</div>
+	<div class="text-center m-1" th:unless="${totalItems > 0}">
+		<span>Không tìm thấy</span>
+	</div>
+			
+<div th:if="${totalPages > 1}" th:with="pageUrlPostfix = '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}">
+		<nav>
+			 <ul class="pagination justify-content-center flex-wrap" th:with="pageUrlPrefix = '/' + ${baseURL} + '/page/'">
+				<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+					<a th:href="@{${pageUrlPrefix} + '1' + ${pageUrlPostfix}}" class="page-link">Đầu tiên</a>	
+				</li>
+				<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+					<a th:href="@{${pageUrlPrefix} + ${currentPage - 1} + ${pageUrlPostfix}}" class="page-link">Trước</a>
+				</li>
+				<li th:each="i: ${#numbers.sequence(1, totalPages)}" th:class="${currentPage != i ? 'page-item' : 'page-item active'}">
+					<a th:href="@{${pageUrlPrefix} + ${i} + ${pageUrlPostfix}}" class="page-link">[[${i}]]</a>
+				</li>
+				<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+					<a th:href="@{${pageUrlPrefix} + ${currentPage + 1} + ${pageUrlPostfix}}" class="page-link">Kế tiếp</a>
+				</li>
+				<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+					<a th:href="@{${pageUrlPrefix} + ${totalPages} + ${pageUrlPostfix}}" class="page-link">Cuối cùng</a>
+				</li>
+			</ul>
+		</nav>
+	</div>	
+</div>			
+</body>
+</html> 

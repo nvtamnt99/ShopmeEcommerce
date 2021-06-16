@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Khách hàng - Shopme Admin', 'none')" />
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu"></div>
+	<div>
+		<h2>Quản lý khách hàng</h2>	
+		
+		<a style="text-decoration: none;" th:href="@{/khachhang/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+		<a style="text-decoration: none;" th:href="@{/khachhang/export/excel}" class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
+	</div>
+		
+	<div th:replace="fragments :: search_form_and_message(url='/khachhang/page/1')">Tìm kiếm</div>
+
+    <div>
+        <table class="table table-striped table-bordered table-hover table-responsive-xl">
+            <thead class="thead-dark" th:with="headerUrlPrefix = '/khachhang/page/' + ${currentPage} + '?sortField='">
+                <tr th:with="headerUrlPostfix = '&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}">
+                    <th>
+						<a th:href="@{${headerUrlPrefix} + 'id' + ${headerUrlPostfix}}" class="text-white">ID</a>
+						<span th:if="${sortField == 'id'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+                    <th>
+						<a th:href="@{${headerUrlPrefix} + 'firstName' + ${headerUrlPostfix}}" class="text-white">Họ</a>
+						<span th:if="${sortField == 'firstName'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'lastName' + ${headerUrlPostfix}}" class="text-white">Tên</a>
+						<span th:if="${sortField == 'lastName'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>					
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'email' + ${headerUrlPostfix}}" class="text-white">E-mail</a>
+						<span th:if="${sortField == 'email'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'city' + ${headerUrlPostfix}}" class="text-white">Thành phố</a>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'state' + ${headerUrlPostfix}}" class="text-white">Tỉnh</a>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'country' + ${headerUrlPostfix}}" class="text-white">Quốc gia</a>
+					</th>					
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'enabled' + ${headerUrlPostfix}}" class="text-white">Trạng thái</a>
+						<span th:if="${sortField == 'enabled'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="customer : ${listCustomers}">
+                    <td th:text="${customer.maKhachHang}">Mã khách hàng</td>
+					<td th:text="${customer.ho}">Họ</td>
+					<td th:text="${customer.ten}">Tên</td>
+					<td th:text="${customer.email}">E-mail</td>
+					<td th:text="${customer.thanhPho}">Thành phố</td>
+					<td th:text="${customer.tinh}">Tỉnh</td>
+					<td th:text="${customer.datNuoc} != null ? ${customer.datNuoc.ten} : ''">Đất nước</td>
+                    <td>
+						<a th:if="${customer.trangThai == true}" class="fas fa-check-circle fa-2x icon-green"
+							th:href="@{'/khachhang/' + ${customer.maKhachHang} + '/enabled/false'}"
+							title="Vô hiệu hóa khách hàng này"
+							>
+						</a>
+						<a th:unless="${customer.trangThai == true}" class="fas fa-circle fa-2x icon-dark"
+							th:href="@{'/khachhang/' + ${customer.maKhachHang} + '/enabled/true'}"
+							title="Cho phép khách hàng này"
+							>
+						</a>
+					</td>
+					<td>
+						<a class="fas fa-file-alt fa-2x icon-green link-detail" th:href="@{'/khachhang/detail/' + ${customer.maKhachHang}}" title="Xem chi tiết của khách hàng này"></a>
+						&nbsp;&nbsp;&nbsp;					
+						<a class="fas fa-edit fa-2x icon-green" th:href="@{'/khachhang/edit/' + ${customer.maKhachHang}}" title="Chỉnh sửa khách hàng này"></a> 
+						&nbsp;&nbsp;&nbsp;
+						<a class="fas fa-trash fa-2x icon-dark li-modal" th:href="@{/show_delete_modal(type=khachhang,keyField=${customer.HoTen},id=${customer.maKhachHang})}" title="Xóa khách hàng này"></a>
+					</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="fragments :: pagination('khách hàng', 'customers')">Static Pagination</div>
+    <div class="modal fade text-center" id="theModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+    </div>
+      
+    <div th:replace="fragments :: footer">Static footer</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$(".link-detail").on("click", function(e) {
+			e.preventDefault();
+			$('#theModal').modal('show').find('.modal-content').load($(this).attr('href'));
+		});
+		
+		$(".li-modal").on('click', function (e) {
+		  e.preventDefault();
+		  $('#theModal').modal('show').find('.modal-content').load($(this).attr('href'));
+		});
+	});
+	
+	function clearFilter() {
+		window.location = "[[@{'/khachhang/'}]]";
+	}
+</script>
+</body>
+</html>

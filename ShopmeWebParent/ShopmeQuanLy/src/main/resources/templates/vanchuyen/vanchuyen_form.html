@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head(${pageTitle}, 'none')" />
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu">Static Menu</div>
+	<div>
+		<h2>Phí vận chuyển | [[${pageTitle}]]</h2>
+	</div>
+	<form th:action="@{/vanchuyen/save}" th:object="${rate}" method="post" style="max-width: 700px; margin: 0 auto;">
+		<input type="hidden" th:field="*{ma}" />
+		<div class="border border-secondary rounded p-3">
+
+			<div class="form-group row">
+				<label for="country" class="col-sm-4 col-form-label">Quốc gia đến:</label>
+				<div class="col-sm-8">
+				  <select th:field="*{datNuoc}" class="form-control" required>
+					  <th:block th:each="nation : ${listCountries}">
+						  <option th:value="${nation.maDatnuoc}" th:text="${nation.ten}" />
+					  </th:block>
+				  </select>
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="state" class="col-sm-4 col-form-label">Tiểu bang / Tỉnh của Điểm đến:</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" th:field="*{tinh}" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="rate" class="col-sm-4 col-form-label">Tỷ lệ vận chuyển (theo trọng lượng DIM):</label>
+				<div class="col-sm-8">
+					<input type="number" step="0.01" class="form-control" th:field="*{gia}" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="days" class="col-sm-4 col-form-label">Số ngày vận chuyển:</label>
+				<div class="col-sm-8">
+					<input type="number" class="form-control" th:field="*{soNgay}" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="cod" class="col-sm-4 col-form-label">Thanh toán khi giao hàng (COD):</label>
+				<div class="col-sm-8">
+					<input type="checkbox" th:field="*{hoTroCOD}" /> 
+				</div>
+			</div>
+												
+		  <div>
+			  <p class="text-center">
+				  <input type="submit" value="Lưu" class="btn btn-primary m-3" />
+				  <input type="button" value="Hủy" class="btn btn-secondary" id="buttonCancel" />
+			  </p>	
+		  </div>		
+		</div>
+	</form>
+	<div th:replace="fragments :: standard_modal">Standard Modal Dialog</div>
+	
+	<div th:replace="fragments :: footer">Static footer</div>
+</div>
+<script type="text/javascript">
+	moduleURL = "[[@{/vanchuyen}]]";
+</script>
+<script th:src="@{/js/common_form.js}"></script>
+</body>
+</html>

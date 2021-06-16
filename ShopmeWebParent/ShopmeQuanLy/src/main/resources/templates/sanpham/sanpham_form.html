@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+	<head th:replace="fragments :: page_head(${pageTitle}, 'tag')" />
+	<link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
+	<script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div th:replace="navigation :: menu"></div>
+		<div>
+			<h2>Quản lý sản phẩm | [[${pageTitle}]]</h2>
+		</div>
+
+		<form th:action="@{/sanpham/save}" method="post" onsubmit="return checkUnique(this)"
+			enctype="multipart/form-data" th:object="${product}">
+			<input type="hidden" th:field="*{maSanPham}" />
+			<input th:if="${product.danhmuc != null}" type="hidden" id="categoryId"
+				th:value="${product.danhmuc.maDanhMuc}" />
+			<div>
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" data-toggle="tab" href="#overview" role="tab">Tổng quát</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#description" role="tab">Mô tả</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#images" role="tab">Hình ảnh</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#details" role="tab">Chi tiết</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#shipping" role="tab">Giao hàng</a>
+					</li>
+				</ul>
+
+				<div class="tab-content">
+					<div class="tab-pane active p-3" id="overview" role="tabpanel">
+						<div th:replace="sanpham/sanpham_overview :: content"></div>
+					</div>
+					<div class="tab-pane" id="description" role="tabpanel">
+						<th:block sec:authorize="hasAuthority('Nhân viên bán hàng')">
+							<div th:replace="sanpham/sanpham_description_read_only :: content"></div>
+						</th:block>
+
+						<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+							<div th:replace="sanpham/sanpham_description :: content"></div>
+						</th:block>
+					</div>
+					<div class="tab-pane" id="images" role="tabpanel">
+						<th:block sec:authorize="hasAuthority('Nhân viên bán hàng')">
+							<div th:replace="sanpham/sanpham_images_read_only :: content"></div>
+						</th:block>
+
+						<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+							<div th:replace="sanpham/sanpham_images :: content"></div>
+						</th:block>
+					</div>
+					<div class="tab-pane p-3" id="details" role="tabpanel">
+						<th:block sec:authorize="hasAuthority('Nhân viên bán hàng')">
+							<div th:replace="sanpham/sanpham_details_read_only :: content"></div>
+						</th:block>
+
+						<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+							<div th:replace="sanpham/sanpham_details :: content"></div>
+							<div>
+								<input type="button" class="btn btn-secondary" value="Thêm chi tiết khác"
+									onclick="addNextDetailSection()" />
+
+							</div>
+						</th:block>
+					</div>
+					<div class="tab-pane p-3" id="shipping" role="tabpanel">
+						<th:block sec:authorize="hasAuthority('Nhân viên bán hàng')">
+							<div th:replace="sanpham/sanpham_shipping_read_only :: content"></div>
+						</th:block>
+
+						<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+							<div th:replace="sanpham/sanpham_shipping :: content"></div>
+						</th:block>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<input type="submit" value="Lưu" class="btn btn-primary m-3" />
+				<input type="button" value="Hủy" class="btn btn-secondary" id="buttonCancel" />
+			</div>
+		</form>
+
+		<div th:replace="modal_fragments :: modal_dialog"></div>
+
+		<div th:replace="fragments :: footer"></div>
+
+	</div>
+	<script type="text/javascript">
+		MAX_FILE_SIZE = 2097152; // 1MB
+
+		moduleURL = "[[@{/sanpham}]]";
+		brandModuleURL = "[[@{/nhanhieu}]]";
+		defaultImageThumbnailSrc = "[[@{/images/image-thumbnail.png}]]";
+		checkUniqueUrl = "[[@{/sanpham/check_unique}]]";
+	</script>
+	<script th:src="@{/js/common_form.js}"></script>
+	<script th:src="@{/js/sanpham_form_overview.js}"></script>
+	<script th:src="@{/js/sanpham_form_images.js}"></script>
+	<script th:src="@{/js/sanpham_form_details.js}"></script>
+</body>
+
+</html>

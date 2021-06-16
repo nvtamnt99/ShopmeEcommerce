@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head(${pageTitle}, 'none')" />
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu">Static Menu</div>
+	
+	<div>
+		<h2>Quản lý khách hàng | [[${pageTitle}]]</h2>
+	</div>
+    <form th:action="@{/khachhang/save}" th:object="${customer}" method="post"
+		style="max-width: 600px; margin:  0 auto;"
+		onsubmit="return checkEmailUnique(this);">
+        <input type="hidden" th:field="*{maKhachHang}" />
+        <div class="border border-secondary rounded p-3">
+            <div class="form-group row">
+                <label for="firstName" class="col-sm-4 col-form-label">Họ:</label>
+	            <div class="col-sm-8">
+	                <input type="text" class="form-control" th:field="*{ho}" required minlength="2" maxlength="45">
+	             </div>
+            </div>
+            <div class="form-group row">
+                <label for="lastName" class="col-sm-4 col-form-label">Tên:</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" th:field="*{ten}" required minlength="2" maxlength="45">
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="email" class="col-sm-4 col-form-label">E-mail:</label>
+                <div class="col-sm-8">
+                  <input type="email" class="form-control" th:field="*{email}" required minlength="10" maxlength="45">
+                </div>
+            </div>
+              
+            <div class="form-group row">
+                <label for="password" class="col-sm-4 col-form-label">Mật khẩu:</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" th:field="*{matKhau}" minlength="6" maxlength="45" placeholder="Để trống nếu bạn không muốn thay đổi mật khẩu">
+                </div>
+            </div>
+              
+            <div class="form-group row">
+                <label for="phoneNumber" class="col-sm-4 col-form-label">Số điện thoại:</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" th:field="*{soDienThoai}" required minlength="9" maxlength="12">
+                </div>
+            </div>
+              
+            <div class="form-group row">
+                <label for="addressLine1" class="col-sm-4 col-form-label">Địa chỉ 1:</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" th:field="*{diaChi1}" required minlength="9" maxlength="64">
+                </div>
+            </div>
+              
+            <div class="form-group row">
+                <label for="addressLine2" class="col-sm-4 col-form-label">Địa chỉ 2:</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" th:field="*{diaChi2}" maxlength="64">
+                </div>
+            </div>
+        
+            <div class="form-group row">
+                <label for="city" class="col-sm-4 col-form-label">Thành phố:</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" th:field="*{thanhPho}" required minlength="3" maxlength="64">
+                </div>
+            </div>
+                            
+            <div class="form-group row">
+                <label for="country" class="col-sm-4 col-form-label">Quốc gia:</label>
+                <div class="col-sm-8">
+                  <select th:field="*{datNuoc}" class="form-control">
+                      <option th:each="country : ${listCountries}" th:value="${country.maDatnuoc}">[[${country.ten}]]</option>
+                  </select>
+                </div>
+            </div>
+              
+            <div class="form-group row">
+                <label for="state" class="col-sm-4 col-form-label">Tỉnh/Bang:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:field="*{tinh}" minlength="3" maxlength="64" list="listStates"> 
+                  <datalist id="listStates">
+                      
+                  </datalist>
+                </div>
+            </div>
+              
+            <div class="form-group row">
+                <label for="postalCode" class="col-sm-4 col-form-label">Mã bưu điện:</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" th:field="*{maBuuDien}" required minlength="3" maxlength="6">
+                </div>
+            </div>
+              
+            <div class="text-center">
+                  <input type="submit" value="Lưu" class="btn btn-primary m-3" />
+                  <input type="button" value="Hủy" class="btn btn-secondary" id="buttonCancel" />
+            </div>
+            
+        </div>
+    </form>
+    <div th:replace="fragments :: standard_modal">Standard Modal Dialog</div>
+	
+	<div th:replace="fragments :: footer">Static footer</div>
+</div>
+<script type="text/javascript">
+	var dropdownCountries;
+	var dropdownStates;
+	var state;
+	
+	$(document).ready(function() {
+		dropdownCountries = $("#datNuoc");
+		dropdownStates = $("#listStates");
+			
+		dropdownCountries.on("change", function() {
+			loadStates4Country();
+			$("#tinh").val("").focus();
+		});	
+		
+		loadStates4Country();
+		
+		$('#buttonCancel').click(function() { 
+			window.location = "[[@{/khachhang}]]";	
+		});		
+	});
+	
+	function loadStates4Country() {
+		selectedCountry = $("#datNuoc option:selected");
+		countryId = selectedCountry.val();
+		
+		url = "[[@{/tinhs/list_by_country/}]]" + countryId;
+		
+		$.get(url, function(responseJson) {
+			dropdownStates.empty();
+			
+			$.each(responseJson, function(index, state) {
+				$("<option>").val(state.ten).text(state.ten).appendTo(dropdownStates);
+			});
+		}).done(function() {
+			//changeFormToNewState();
+			//showToastMessage("All states have been loaded for country " + selectedCountry.text());
+		})	
+	}	
+	
+	function checkEmailUnique(form) {
+		customerId = $("#maKhachHang").val();
+		customerEmail = $("#email").val();
+		csrfValue = $("input[name='_csrf'").val();
+		
+		url = "[[@{/khachhangs/check_email}]]";
+		params = {maKhachHang : customerId, email: customerEmail, _csrf: csrfValue};
+		
+		$.post(url, params, function(response) {
+			if (response == "OK") {
+				form.submit();
+			} else if (response == "Duplicated") {
+				$("#modalBody").text("Cảnh báo");
+				$("#modalBody").text("Có một khách hàng khác có email " + customerEmail);
+				
+				$("#myModal").on("hide.bs.modal", function(e) {
+					$("#email").focus();	
+				});
+				
+				$('#myModal').modal();
+			} else {
+				$("#modalBody").text("Lỗi");
+				$("#modalBody").text("Phản hồi không xác định từ máy chủ");
+				$('#myModal').modal();
+			}			
+		}).fail(function() {
+			$("#modalBody").text("Lỗi");
+			$("#modalBody").text("Phản hồi không xác định từ máy chủ");
+			$('#myModal').modal();			
+		});
+		
+		return false;
+	}	
+	
+</script>
+</body>
+</html>

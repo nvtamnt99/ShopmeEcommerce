@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments :: page_head('Vận chuyển - Shopme Admin', 'none')" />
+<body>
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <div>
+		<h2>Giá vận chuyển</h2>
+		<a th:href="@{/vanchuyen/new}">Tạo giá vận chuyển mới</a>		
+	</div>
+    <div th:replace="fragments :: search_form_and_message(url='/vanchuyen/page/1')">Form tìm kiếm</div>
+    <div>
+        <table class="table table-striped table-bordered table-hover table-responsive-xl">
+            <thead class="thead-dark" th:with="headerUrlPrefix = '/vanchuyen/page/' + ${currentPage} + '?sortField='">
+                <tr th:with="headerUrlPostfix = '&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}">
+                    <th>
+						<a th:href="@{${headerUrlPrefix} + 'id' + ${headerUrlPostfix}}" class="text-white">Mã vận chuyển</a>
+						<span th:if="${sortField == 'id'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'country' + ${headerUrlPostfix}}" class="text-white">Quốc gia</a>
+						<span th:if="${sortField == 'country'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'state' + ${headerUrlPostfix}}" class="text-white">Tỉnh</a>
+						<span th:if="${sortField == 'state'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'rate' + ${headerUrlPostfix}}" class="text-white">Giá</a>
+						<span th:if="${sortField == 'rate'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'days' + ${headerUrlPostfix}}" class="text-white">Số ngày</a>
+						<span th:if="${sortField == 'days'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'codSupported' + ${headerUrlPostfix}}" class="text-white">Hỗ trợ COD</a>
+						<span th:if="${sortField == 'codSupported'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>					
+					<th></th>
+                </tr>
+            </thead>
+            <tbody>
+				<tr th:each="rate : ${shippingRates}">
+					<td th:text="${rate.ma}">Mã vận chuyển</td>
+					<td th:text="${rate.datNuoc.ten}">Quốc gia</td>
+					<td th:text="${rate.tinh}">Tỉnh/Bang</td>
+					<td th:text="${rate.gia}">Giá</td>
+					<td th:text="${rate.soNgay}">Số ngày</td>
+					<td>
+						<a th:if="${rate.hoTroCOD == true}" class="fas fa-check-circle fa-2x icon-green"
+							th:href="@{'/vanchuyen/cod/' + ${rate.ma} + '/false'}" title="Tắt hỗ trợ COD"
+							></a>
+						<a th:unless="${rate.hoTroCOD == true}" class="fas fa-circle fa-2x icon-dark"
+							th:href="@{'/vanchuyen/cod/' + ${rate.ma} + '/true'}" title="Bật hỗ trợ COD"
+							></a>
+					</td>
+					<td>
+						<a class="fas fa-edit fa-2x icon-green" th:href="@{'/vanchuyen/edit/' + ${rate.ma}}" title="Chỉnh sửa phí vận chuyển này"></a> 
+						&nbsp;&nbsp;&nbsp;
+						<a class="fas fa-trash fa-2x icon-dark small-link" th:href="@{/show_delete_modal(type=vanchuyen,keyField=${rate.datNuoc.ten},id=${rate.ma})}" title="Xóa phí vận chuyển này"></a>
+					</td>
+				</tr>
+			</tbody>
+        </table>
+    </div>
+    <div th:replace="fragments :: pagination('giá vận chuyển', 'rate')">Static Pagination</div>
+	
+	<div class="modal fade text-center" id="smallModal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	    </div>
+	  </div>
+	</div>	
+    <div th:replace="fragments :: footer">Static footer</div>
+</div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		handleDeleteLink();
+	});
+	
+	function handleDeleteLink() {
+		$(".small-link").on("click", function(e) {
+			e.preventDefault();
+			$('#smallModal').modal('show').find('.modal-content').load($(this).attr('href'));
+		});		
+	}
+	
+	function clearFilter() {
+		window.location = "[[@{'/vanchuyen/'}]]";
+	}	
+</script>
+</html>

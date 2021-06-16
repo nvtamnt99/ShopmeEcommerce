@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<head th:replace="fragments :: page_head('Cài đặt - Shopme Admin', 'tag')" />
+	<link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
+	<script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu"></div>
+	<div>
+		<h2>Cài đặt Trang web</h2>	
+	</div>
+			
+	<div th:if="${message != null}" class="alert alert-success text-center">
+		[[${message}]]
+	</div>
+					
+	<div>
+		<ul class="nav nav-tabs" id="settingTab" role="tablist">
+		  <li class="nav-item">
+		    <a class="nav-link active" data-toggle="tab" href="#general" role="tab">Chung</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" data-toggle="tab" href="#countries" role="tab">Quốc gia</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" data-toggle="tab" href="#states" role="tab">Tỉnh</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" data-toggle="tab" href="#mailServer" role="tab">Mail Server</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" data-toggle="tab" href="#mailTemplates" role="tab">Mẫu thư</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" data-toggle="tab" href="#payment" role="tab">Thanh toán</a>
+		  </li>		  		  
+		</ul>
+		
+		<div class="tab-content">
+		  <div class="tab-pane active p-3" id="general" role="tabpanel">
+		  	<div th:replace="caidat/chung :: content"></div>
+		  </div>
+		  <div class="tab-pane p-3" id="countries" role="tabpanel">
+			<div th:replace="caidat/datnuocs :: content"></div>
+		  </div>
+		  <div class="tab-pane p-3" id="states" role="tabpanel">
+			<div th:replace="caidat/tinhs :: content"></div>
+		  </div>
+		  <div class="tab-pane p-3" id="mailServer" role="tabpanel">
+			<div th:replace="caidat/mail_server :: content"></div>
+		  </div>
+		  <div class="tab-pane p-3" id="mailTemplates" role="tabpanel">
+			<div th:replace="caidat/mauthu/mail_templates :: content"></div>
+		  </div>
+		  <div class="tab-pane p-3" id="payment" role="tabpanel">
+			<div th:replace="caidat/paypal :: content"></div>
+		  </div>		  	
+		 </div>
+	</div>
+
+	<div class="toast justify-content-center d-flex" role="alert" aria-live="polite" aria-atomic="true" data-delay="3000">
+	  <div role="alert" aria-live="assertive" aria-atomic="true">
+	  	<div class="toast-body">
+	  		<span id="toastMessage"></span>
+	  	</div>
+	  </div>
+	</div>
+	
+	<div th:replace="fragments :: footer"></div>
+	
+</div>
+<script type="text/javascript">
+	MAX_FILE_SIZE = 102400; // 100KB
+	contextPath = "[[@{/}]]";
+	var csrfHeaderName = "[[${_csrf.headerName}]]";	
+	var csrfValue = "[[${_csrf.token}]]";
+	
+	$(document).ready(function() {
+		$("#customerVerificationContent").richText();
+		$("#orderConfirmationContent").richText();
+	});
+	
+</script>
+
+<script th:src="@{/js/countries_setting.js}"></script>
+<script th:src="@{/js/states_setting.js}"></script>
+<script th:src="@{/js/common_form.js}"></script>
+</body>
+</html>

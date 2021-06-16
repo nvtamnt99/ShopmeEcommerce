@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content" th:remove="tag">				
+	<div class="form-group row">
+		<label class="col-sm-2 col-form-label">Ngày vận chuyển:</label>
+		<div class="col-sm-10">
+			<input type="number" step="1" class="form-control" th:field="*{giaoNgay}" required />
+		</div>
+	</div>		
+      
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Ngày giao hàng dự kiến:</label>
+        <div class="col-sm-10">
+            <input type="date" class="form-control" th:field="*{DeliverDateOnForm}" required />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Họ:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{ho}" required />
+        </div>
+    </div>	
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Tên:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{ten}" required />
+        </div>
+    </div>
+			  
+	<div class="form-group row">
+        <label class="col-sm-2 col-form-label">Số điện thoại:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{soDienThoai}" required />
+        </div>
+    </div>		  
+	
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Địa chỉ 1:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{diaChi1}" required />
+        </div>
+    </div>
+	
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Địa chỉ 2:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{diaChi2}" />
+        </div>
+    </div>
+
+	<div class="form-group row">
+        <label class="col-sm-2 col-form-label">Thành phố:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{thanhPho}" required />
+        </div>
+    </div>		  
+	
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Tỉnh:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{tinh}" />
+        </div>
+    </div>
+	
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Đất nước:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{quocGia}" required />
+        </div>
+    </div>
+	
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Mã bưu điện:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{maBuuDien}" required />
+        </div>
+    </div>
+</div>

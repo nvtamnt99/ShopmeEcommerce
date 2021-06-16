@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments :: page_head('Checkout', 'none')" />
+<body>
+	<div class="container-fluid">
+	<div th:replace="navigation :: header_menu"></div>
+	<div th:replace="navigation :: search_nav"></div>
+	<div>
+		<h2>Thủ tục thanh toán</h2>
+		<br/>
+	</div>
+	
+	<form method="post" th:action="@{/dathang}">
+		<div class="row m-1">
+			<div class="col-sm-8">
+				<div class="card">
+					<div class="card-header"><h5>Thông tin vận chuyển</h5></div>
+					<div class="card-body">
+						<p><b>Vận chuyển tới: </b>[[${diaChiNhanhang}]]<a th:href="@{/khachhang/diachi(redirect=checkout)}">[Gửi đến một địa chỉ khác]</a></p>
+						<p><b>Ngày giao hàng: </b>[[${giaVanchuyen.soNgay}]]</p>
+						<p><b>Ngày giao hàng dự kiến: </b><div th:replace="navigation :: deliver_date(${deliverDate})">Ngày giao hàng</div></p>
+					</div>
+				</div>
+				<div class="card mt-3 mb-3">
+					<div class="card-header"><h5>Phương thức thanh toán</h5></div>
+					<div class="card-body">
+						<div th:if="${giaVanchuyen.hoTroCOD == true}">
+							<p>
+								<input type="radio" name="paymentMethod" id="radioCOD" value="COD" /> Giao hàng tiền mặt (COD)
+								&nbsp;&nbsp;&nbsp;
+								<button type="submit" class="btn btn-primary d-none" id="buttonSubmit">Đặt hàng với COD</button>
+							</p>
+							
+						</div>
+						
+						<div id="paypal-button-container">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="card">
+					<div class="card-header"><h5>Tổng đơn đặt</h5></div>
+					<div class="card-body">
+						<div>
+							<table>
+								<th:block th:each="items, status : ${dsGiohang}">
+									<tr th:with="sp = ${items.sanpham}">
+										<td>[[${items.soLuong}]] x &nbsp;&nbsp;</td>
+										<td width="70%">
+											<a th:href="@{${sp.URI}}" th:title="${sp.ten}" target="_blank">[[${sp.ten}]]</a>
+											<small>Vận chuyển: <div th:replace="navigation :: currency_format(${items.Ship})">Vận chuyển</div> 
+											</small>
+										</td>
+										<td>
+											<div th:replace="navigation :: currency_format(${sp.giaBan})">Giá bán sản phẩm</div>
+										</td>
+									</tr>
+								</th:block>
+							</table>
+						</div>
+						<div class="row mt-2">
+							<div class="col">
+								Tổng Sản Phẩm:
+							</div>				
+							<div class="col">
+								<div th:replace="navigation :: currency_format(${tong})">Tổng sản phẩm</div>
+							</div>			
+						</div>
+						
+						<div class="row mt-2">
+							<div class="col">
+								Tổng phí vận chuyển:
+							</div>
+							<div class="col">
+								<div th:replace="navigation :: currency_format(${tongPhiVanchuyen})">Tổng phí vận chuyển</div> 
+							</div>
+						</div>
+
+						<div class="row mt-2">
+							<div class="col">
+								Tổng tiền thanh toán:
+							</div>
+							<div class="col">
+								 <b><div th:replace="navigation :: currency_format(${tongPhi})">Tổng tiền thanh toán</div></b> 
+							</div>
+						</div>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="card mt-3 mb-3">
+		<div class="card-header"><h5>Thanh toán bằng PAYPAL</h5></div>
+			<div class="card-body">
+				<form method="post" th:action="@{/paypal}">
+					<input type="radio" name="paymentMethod" id="radioPaypal" value="PAYPAL" />Thanh toán bằng Paypal
+					&nbsp;&nbsp;&nbsp;
+					<button type="submit" class="btn btn-primary d-none" id="buttonSubmitPaypal">Đặt hàng với Paypal</button>
+				</form>
+			</div>
+	</div>
+	
+	<div th:replace="navigation :: standard_modal"></div>
+	<div th:replace="navigation :: footer_menu"></div>
+</div>
+<script type="text/javascript">
+	contextPath = "[[@{/}]]";
+	var crsfHeaderName = "[[${_csrf.headerName}]]";
+	var csrfValue = "[[${_csrf.token}]]";
+	
+	$(document).ready(function() {
+		$("#radioCOD").on("click", function(e) {
+			$("#buttonSubmit").removeClass("d-none");			
+		});		
+	});	
+	$(document).ready(function() {
+		$("#radioPaypal").on("click", function(e) {
+			$("#buttonSubmitPaypal").removeClass("d-none");			
+		});		
+	});	
+	
+	function validateOrder(orderId, totalAmount) {
+		$("#orderId").val(orderId);
+		$("#totalAmount").val(totalAmount);
+		$("#paypalForm").submit();
+	}
+</script>
+</body>
+</html>

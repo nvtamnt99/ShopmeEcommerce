@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments :: page_head('Địa chỉ', 'none')" />
+<body>
+<div class="container-fluid">
+    <div th:replace="navigation :: header_menu"></div>
+	<div th:replace="navigation :: search_nav"></div>
+	
+    <div class="text-center">
+        <th:block th:if="${param.redirect}">
+			<h2>Chọn một địa chỉ giao hàng</h2>
+		</th:block>
+		<th:block th:unless="${param.redirect}">
+			<h2>Quản lý địa chỉ giao hàng của bạn</h2>
+		</th:block>
+        <th:block th:if="${param.redirect}">
+			<a th:href="@{/khachhang/diachi/new(redirect=checkout)}">Tạo một địa chỉ mới</a>
+		</th:block>
+		<th:block th:unless="${param.redirect}">
+			<a th:href="@{/khachhang/diachi/new}">Tạo một địa chỉ mới</a>
+		</th:block>		
+		<br/>
+    </div>
+    <div class="row m-1">
+        <div class="col-sm-6 mt-2">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-8">
+                            <b>Địa chỉ chính của bạn</b>
+                            <span class="text-danger" th:if="${defaultAddressId == 0}">
+								<th:block th:if="${param.redirect}">[Hiện đã được chọn]</th:block>
+								<th:block th:unless="${param.redirect}">[Mặc định]</th:block>
+							</span>
+                            <a class="text-success" th:unless="${defaultAddressId == 0}" th:href="@{${param.redirect} ? '/khachhang/diachi/chon/0?redirect=checkout' : '/khachhang/diachi/chon/0'}">
+								<th:block th:if="${param.redirect}">[Chọn]</th:block>
+								<th:block th:unless="${param.redirect}">[Đặt làm mặc định]</th:block>							
+							</a>	
+                        </div>
+                        <div class="col">
+							<div class="float-right">
+								<a class="fas fa-edit icon-dark" title="Chỉnh sửa địa chỉ này" th:href="@{/khachhang(redirect=diachi)}"></a>
+							</div>
+						</div>
+                    </div>
+                </div>
+                <div class="card-body">
+					<p>[[${customer.Diachi}]]</p>
+				</div>
+            </div>
+        </div>
+        <th:block th:each="add, status : ${listAddresses}">
+            <div class="col-sm-6 mt-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <b>Địa chỉ #[[${status.count} + 1]]</b>
+							<span class="text-danger" th:if="${defaultAddressId == add.ma}">
+								<th:block th:if="${param.redirect}">[Hiện đã được chọn]</th:block>
+								<th:block th:unless="${param.redirect}">[Mặc định]</th:block>
+							</span>
+                            <a class="text-success" th:unless="${defaultAddressId == add.ma}" th:href="@{${param.redirect} ? '/khachhang/diachi/chon/' + ${add.ma} + '?redirect=checkout' : '/khachhang/diachi/chon/' + ${add.ma}}">
+								<th:block th:if="${param.redirect}">[Chọn]</th:block>
+								<th:block th:unless="${param.redirect}">[Đặt làm mặc định]</th:block>
+							</a>
+                        </div>
+                        <div class="col">
+							<div class="float-right">
+								<a class="fas fa-edit icon-dark" title="Chỉnh sửa địa chỉ này" th:href="@{'/khachhang/diachi/edit/' + ${add.ma}}"></a>
+								&nbsp;&nbsp;
+								<a class="fas fa-trash icon-dark link-delete" title="Xóa địa chỉ này" th:href="@{/show_delete_modal(type=diachi,keyField=${add.ho},id=${add.ma})}"></a>
+							</div>
+						</div>
+                    </div>
+                    <div class="card-body">
+                        <p>[[${add}]]</p>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+    <div class="modal fade text-center" id="smallModal">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	    	</div>
+	  	</div>
+	</div>		
+    <div th:replace="navigation :: footer">Static footer</div>
+</div>
+<script type="text/javascript">
+	contextPath = "[[@{/khachhang}]]";
+	var crsfHeaderName = "[[${_csrf.headerName}]]";
+	var csrfValue = "[[${_csrf.token}]]";
+	
+	$(document).ready(function(){
+
+		$(".link-delete").on('click', function (e) {
+			e.preventDefault();
+			$('#smallModal').modal('show').find('.modal-content').load($(this).attr('href'));		  
+		});
+	});	
+</script>
+</body>
+</html>

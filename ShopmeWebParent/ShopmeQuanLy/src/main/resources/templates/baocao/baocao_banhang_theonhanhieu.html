@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content" th:remove="tag">
+	<div>
+		<button period="last_7_days" class="btn-sales-by-cat btn btn-light m-1">7 ngày qua</button>
+		<button period="last_28_days" class="btn-sales-by-cat btn btn-light m-1">28 ngày qua</button>
+		<button period="last_6_months" class="btn-sales-by-cat btn btn-light m-1">6 tháng qua</button>
+		<button period="last_year" class="btn-sales-by-cat btn btn-light m-1">Năm trước</button>
+	</div>
+
+	<div id="chart_sales_by_category" class="mt-3"></div>
+	
+	<div class="row">
+		<div class="col-2-sm">
+			<div class="card">
+				<div class="card-header">
+					<b>Tổng doanh thu:</b>
+				</div>
+				<div class="card-body">
+					<span class="h3" id="textTotalGrossSales2"></span>
+				</div>
+			</div>		
+		</div>
+		
+		<div class="col-2-sm">
+			<div class="card">
+				<div class="card-header">
+					<b>Tổng doanh số mạng lưới bán hàng:</b>
+				</div>
+				<div class="card-body">
+					<span class="h3" id="textTotalNetSales2"></span>
+				</div>
+			</div>		
+		</div>
+		
+		<div class="col-2-sm">
+			<div class="card">
+				<div class="card-header">
+					<b>Trung bình cộng. Tổng doanh thu:</b>
+				</div>
+				<div class="card-body">
+					<span class="h3" id="textAvgGrossSales2"></span>
+				</div>
+				
+			</div>		
+		</div>
+		
+		<div class="col-2-sm">
+			<div class="card">
+				<div class="card-header">
+					<b>Trung bình cộng. Mạng lưới bán hàng:</b>
+				</div>
+				<div class="card-body">
+					<span class="h3" id="textAvgNetSales2"></span>
+				</div>
+			</div>		
+		</div>
+		
+		<div class="col-2-sm">
+			<div class="card">
+				<div class="card-header">
+					<b><span>Tổng số sản phẩm:</span></b>
+				</div>
+				<div class="card-body">
+					<span class="h3" id="textTotalProducts1"></span>
+				</div>
+			</div>		
+		</div>								
+	</div>	
+</div>

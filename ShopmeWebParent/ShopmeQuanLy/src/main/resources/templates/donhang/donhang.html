@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Đơn hàng - Shopme Admin', 'none')" />
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu"></div>
+	<div>
+		<h2>Quản lý đơn hàng</h2>
+		<a style="text-decoration: none;" th:href="@{/donhang/export/excel}" class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
+	</div>
+
+	<div th:replace="fragments :: search_form_and_message(url='/donhang/page/1')">Search Form</div>	
+    <div>
+        <table class="table table-striped table-bordered table-hover table-responsive-xl">
+            <thead class="thead-dark" th:with="headerUrlPrefix = '/donhang/page/' + ${currentPage} + '?sortField='">
+                <tr th:with="headerUrlPostfix = '&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}">
+                    <th>
+						<a th:href="@{${headerUrlPrefix} + 'id' + ${headerUrlPostfix}}" class="text-white">Mã đơn hàng</a>
+						<span th:if="${sortField == 'id'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>					
+					</th>
+                    <th>
+						<a th:href="@{${headerUrlPrefix} + 'customer' + ${headerUrlPostfix}}" class="text-white">Khách hàng</a>
+						<span th:if="${sortField == 'customer'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'total' + ${headerUrlPostfix}}" class="text-white">Tổng</a>
+						<span th:if="${sortField == 'total'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'orderTime' + ${headerUrlPostfix}}" class="text-white">Thời gian đặt hàng</a>
+						<span th:if="${sortField == 'orderTime'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'city' + ${headerUrlPostfix}}" class="text-white">Địa chỉ nhận</a>
+						<span th:if="${sortField == 'city'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>					
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'paymentMethod' + ${headerUrlPostfix}}" class="text-white">Phương thức thanh toán</a>
+						<span th:if="${sortField == 'paymentMethod'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>					
+					</th>
+					<th>
+						<a th:href="@{${headerUrlPrefix} + 'status' + ${headerUrlPostfix}}" class="text-white">Tình trạng</a>
+						<span th:if="${sortField == 'status'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>					
+					</th>					
+					<th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${listOrders}">
+                    <td th:text="${order.maDonHang}">ID</td>
+                    <td>
+						<a th:href="@{'/khachhang/detail/' + ${order.khachHang.maKhachHang}}" class="small-link">[[${order.khachHang.HoTen}]]</a>
+					</td>
+                    <td>
+						<div th:replace="fragments :: currency_format(${order.tong})">Tổng</div>
+					</td>
+                    <td><div th:replace="fragments :: format_time(${order.thoiGianDatHang})">Thời gian đặt hàng</div></td>
+                    <td th:text="${order.destination}">Nơi nhận</td>
+					<td th:text="${order.phuongThucThanhToan}">Phương thức thanh toán</td>
+					<td th:text="${order.tinhTrangDH}">Tình trạng đơn hàng</td>
+                    <td>
+						<a class="fas fa-file-alt fa-1x icon-green detail-link" th:href="@{'/donhang/detail/' + ${order.maDonHang}}" title="Xem chi tiết của đơn đặt hàng này"></a>
+						&nbsp;&nbsp;				
+						<a class="fas fa-edit fa-1x icon-green" th:href="@{'/donhang/edit/' + ${order.maDonHang}}" title="Chỉnh sửa đơn đặt hàng này"></a> 
+						&nbsp;&nbsp;
+						<a class="fas fa-trash fa-1x icon-dark small-link" th:href="@{/show_delete_modal(type=donhang,keyField=${order.khachHang.HoTen},id=${order.maDonHang})}" title="Xóa đơn đặt hàng này"></a>
+					</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div th:replace="fragments :: pagination(itemName = 'donhang', baseURL = '/donhang')">Static Pagination</div>
+    
+    <div class="modal fade text-center" id="smallModal">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	    	</div>
+	  	</div>
+	</div>			
+	<div class="modal fade" id="largeModal">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>	
+          
+    <div th:replace="fragments :: footer">Static footer</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		handleDeleteLink();
+		handleDetailLink();
+	});
+	
+	function handleDeleteLink() {
+		$(".small-link").on("click", function(e) {
+			e.preventDefault();
+			$('#smallModal').modal('show').find('.modal-content').load($(this).attr('href'));
+		});		
+	}
+	
+	function handleDetailLink() {
+		$(".detail-link").on("click", function(e) {
+			e.preventDefault();
+			$('#largeModal').modal('show').find('.modal-content').load($(this).attr('href'));
+		});		
+	}	
+	
+	function clearFilter() {
+		window.location = "[[@{'/donhang/'}]]";
+	}	
+</script>
+</body>
+</html>

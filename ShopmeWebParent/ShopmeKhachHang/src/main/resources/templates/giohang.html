@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments :: page_head(${pageTitle}, 'none')" />
+<body>
+	<div class="container-fluid">
+		<div th:replace="navigation :: header_menu"></div>
+		<div th:replace="navigation :: search_nav"></div>
+		<div class="text-center">
+			<h2>Giỏ hàng của bạn</h2>
+			<br/>
+		</div>
+
+		<div class="row m-1">
+			<div class="col-sm-8">
+				<th:block th:each="items, status : ${dsGioHang}">
+					<div class="row border rounded p-1" th:with="sp = ${items.sanpham}" th:id="'row' + ${status.count}">
+						<div class="col-1">
+							<div class="div-count">[[${status.count}]]</div>
+							<div class="mt-1">
+								<a class="fas fa-trash icon-dark link-remove" th:rowNumber = "${status.count}"
+									th:href="@{'/cart/remove/' + ${sp.maSanPham}}">
+								</a>
+							</div>
+						</div>
+						<div class="col-3"><img th:src ="@{${sp.duongDanHinhAnhChinh}}" class="img-fluid" /></div>
+						<div class="col-6">
+							<div>
+								<a th:title ="${sp.ten}" th:href="@{${sp.URI}}" target="_blank">
+									<b>[[${sp.ten}]]</b>
+								</a>
+							</div>
+							<div th:replace="quantity_control :: quantity_control(${items.soLuong}, ${items.sanpham.maSanPham})">Số lượng</div>
+							<div>
+								<span>X&nbsp;</span>
+								<th:block th:if="${sp.chietKhau &lt;= 0}">
+									<div th:replace="sanpham/sanpham_fragment :: price_fragment(${sp.giaBan})"></div>
+								</th:block>
+								<th:block th:if="${sp.chietKhau > 0}">
+									<span style="font-size: larger; color: darkred"><div th:replace="sanpham/sanpham_fragment :: price_fragment(${sp.giamGia})"></div></span>
+									<del><span><div th:replace="sanpham/sanpham_fragment :: price_fragment(${sp.giaBan})"></div></span></del>
+								</th:block>
+							</div>
+							<div>
+								<span>=&nbsp;</span>
+								<span th:if="${CURRENCY_SYMBOL_POSITION == 'Before price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+									<span th:id="'subtotal' + ${sp.maSanPham}" class="h4 productSubtotal">[[${#numbers.formatDecimal(items.tongTien, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+								<span th:if="${CURRENCY_SYMBOL_POSITION == 'After price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+							</div>
+						</div>
+					</div>
+					<div class="row m-1">&nbsp;</div>
+				</th:block>
+			</div>
+			<div class="col-sm-4" th:unless="${#lists.isEmpty(dsGioHang)}" id="sectionTotal">
+				<div>
+					<span class="h3">Ước tính Tổng</span>
+				</div>
+				<div class="mt-2">
+					<span th:if="${CURRENCY_SYMBOL_POSITION == 'Before price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+					<span class="h2" id="total"></span>
+					<span th:if="${CURRENCY_SYMBOL_POSITION == 'After price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
+				</div>
+				<div class="mt-2">
+					<th:block th:if="${giaVanchuyen != null}">
+						<form th:action="@{/checkout}" method="get">
+							<button class="btn btn-danger p-3 mt-2">Thanh Toán</button>
+						</form>
+					</th:block>
+					<th:block th:unless="${giaVanchuyen != null}">
+						<span class="h5 text-warning">Không có người vận chuyển cho vị trí này</span>
+						<a th:href="@{/khachhang(redirect=checkout)}">Chỉnh sửa vị trí của bạn</a><br/>
+						<a th:href="@{/khachhang/diachi(redirect=checkout)}">Sử dụng địa chỉ giao hàng khác</a>
+					</th:block>
+				</div>
+			</div>
+		</div>
+		<div th:if="${#lists.isEmpty(dsGioHang)}" id="sectionEmptyCart">
+			<h3>Bạn vẫn chưa chọn được sản phẩm nào</h3>
+		</div>
+		<div th:replace="navigation :: standard_modal"></div>
+		<div th:replace="navigation :: footer_menu"></div>
+	</div>
+<script type="text/javascript">
+	contextPath = "[[@{/}]]";
+	var crsfHeaderName = "[[${_csrf.headerName}]]";
+	var csrfValue = "[[${_csrf.token}]]";
+	decimalDigits = [[${DECIMAL_DIGITS}]];
+	decimalPointType = "[[${DECIMAL_POINT_TYPE}]]";
+	thousandsPointType = "[[${THOUSANDS_POINT_TYPE}]]";
+</script>
+<script th:src="@{/js/jquery.number.min.js}"></script>
+<script th:src="@{/js/shopping_cart.js}"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Báo cáo bán hàng - Shopme Admin', 'none')" />
+<body>
+<div class="container-fluid">
+	 <div th:replace="navigation :: menu">Static Menu</div>
+	<div>
+		<h2>Thống kê bán hàng</h2>
+	</div>
+    <div>
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+		  <li class="nav-item">
+		    <a class="nav-link active" id="date-tab" data-toggle="tab" href="#date" role="tab" aria-controls="date" aria-selected="true">Bán hàng theo ngày</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" id="category-tab" data-toggle="tab" href="#category" role="tab" aria-controls="category" aria-selected="false">Bán hàng theo nhãn hiệu</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" id="product-tab" data-toggle="tab" href="#product" role="tab" aria-controls="product" aria-selected="false">Bán hàng theo sản phẩm</a>
+		  </li>		  		  
+		</ul>
+		<div class="tab-content" id="myTabContent">
+		  <div class="tab-pane fade show active p-3" id="date" role="tabpanel" aria-labelledby="date-tab">
+			<div th:replace="baocao/baocao_banhang_theongay :: content">Bán hàng theo ngày</div>  	  
+		  </div>
+		  
+		  <div class="tab-pane fade p-3" id="category" role="tabpanel" aria-labelledby="category-tab">
+			<div th:replace="baocao/baocao_banhang_theonhanhieu :: content">Bán hàng theo nhãn hiệu</div>  
+		  </div>
+		  
+		  <div class="tab-pane fade p-3" id="product" role="tabpanel" aria-labelledby="product-tab">
+			<div th:replace="baocao/baocao_banhang_theosanpham :: content">Bán hàng theo sản phẩm</div>  
+		  </div>
+		  		 
+		 </div>
+	</div>		
+	<div th:replace="fragments :: footer">Static footer</div> 
+	
+</div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	contextPath = "[[@{/}]]";
+	
+	$(document).ready(function(){
+		google.charts.load('current', {'packages':['corechart', 'table']});
+		google.charts.setOnLoadCallback(loadReportSalesByDate);
+		
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			  currentTab = e.target;
+			  //console.log(currentTab);
+		});		
+		
+	});
+	
+</script>
+<script th:src="@{/js/jquery.number.min.js}"></script>
+<script th:src="@{/js/report_sales_by_date.js}"></script>
+<script th:src="@{/js/report_sales_by_category.js}"></script>
+<script th:src="@{/js/report_sales_by_product.js}"></script> 
+</body>
+</html>

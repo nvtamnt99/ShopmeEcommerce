@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head(${pageTitle}, 'none')" />
+<style>
+	@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+	#rating{border:none;float:left;}
+	#rating>input{display:none;}
+	#rating>label:before{margin:5px;font-size:1.25em;font-family:FontAwesome;display:inline-block;content:"\f005";}/*1 ngôi sao*/
+	#rating>.half:before{content:"\f089";position:absolute;}
+	#rating>label{color:#ddd;float:right;}
+	#rating>input:checked~label,
+	#rating:not(:checked)>label:hover, 
+	#rating:not(:checked)>label:hover~label{color:#FFD700;}
+	#rating>input:checked+label:hover,
+	#rating>input:checked~label:hover,
+	#rating>label:hover~input:checked~label,
+	#rating>input:checked~label:hover~label{color:#FFED85;}
+</style>
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: header_menu"></div>
+	<div th:replace="navigation :: search_nav"></div>
+	<div th:replace="breadcrumb :: content"></div>
+
+	<div class="row">
+		<div class="col-sm">
+			<div>
+				<img id="bigImage" th:src="@{${product.duongDanHinhAnhChinh}}" class="img-fluid" index="0" />
+			</div>
+			<div class="row justify-content-center">
+				<div class="m-2 border border-secondary p-1">
+					<img class="image-thumbnail" th:src="@{${product.duongDanHinhAnhChinh}}" height="50" index="0" />
+				</div>
+				<th:block th:each="extraImage, status : ${product.hinhAnh}">
+				<div class="m-2 border border-secondary p-1">
+					<img class="image-thumbnail" th:src="@{${extraImage.duongDanHinhAnh}}" height="50"
+						th:index="${status.count}" />
+				</div>				
+				</th:block>
+			</div>		
+		</div>
+		<div class="col-sm">
+			<div>
+				<h2>[[${product.ten}]]</h2>
+			</div>
+			<div>
+				<span>Nhãn Hiệu: [[${product.nhanhieu.ten}]]</span>
+			</div>
+			<div>
+				Bảng giá:
+				<span th:if="${product.chietKhau <= 0}"><div th:replace="sanpham/sanpham_fragment :: price_fragment(${product.giaBan})"></div></span>
+				<del th:if="${product.chietKhau > 0}"><span><div th:replace="sanpham/sanpham_fragment :: price_fragment(${product.giaBan})"></div></span></del>
+			</div>
+			<div th:if="${product.chietKhau > 0}">
+				Giá:
+				<span style="font-size: larger; color: darkred"><div th:replace="sanpham/sanpham_fragment :: price_fragment(${product.giamGia})"></div></span>
+				([[${#numbers.formatDecimal(product.chietKhau, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]% off)
+			</div>
+			<div>&nbsp;</div>
+			<div th:utext="${product.moTaNgan}"></div>
+			
+			&nbsp;
+			<div class="mt-2">
+				<div><hr/></div>
+				<div>
+					<h3>Chi tiết sản phẩm:</h3>
+				</div>
+				<th:block th:each="detail : ${product.chitiet}">
+				<div>
+					<b>[[${detail.ten}]]</b>:
+					<span>[[${detail.value}]]</span>
+				</div>
+				</th:block>
+			</div>
+		</div>
+		<div class="col-sm-2">
+			<div>
+				<span th:if="${product.trongKho}" class="text-success"><b>Còn hàng</b></span>
+				<span th:unless="${product.trongKho}" class="text-danger"><b>Hết hàng</b></span>
+			</div>
+			<div class="mt-2" th:replace="quantity_control :: quantity_control(1, ${product.maSanPham})">Số lượng</div>
+			<div class="mt-3">
+				<input type="button" value="Thêm vào giỏ hàng" id="buttonAdd2Cart" class="btn btn-primary" />
+			</div>
+			<div><b>Đánh giá sản phẩm</b></div>
+			
+			<div id="rating">
+				<input type="radio" id="star5" name="rating" value="5" />
+				<label class = "full" for="star5" title="Awesome - 5 stars"></label>
+			 
+				<input type="radio" id="star4" name="rating" value="4" />
+				<label class = "full" for="star4" title="Pretty good - 4 stars"></label>
+			 
+				<input type="radio" id="star3" name="rating" value="3" />
+				<label class = "full" for="star3" title="Meh - 3 stars"></label>
+			 
+				<input type="radio" id="star2" name="rating" value="2" />
+				<label class = "full" for="star2" title="Kinda bad - 2 stars"></label>
+			 
+				<input type="radio" id="star1" name="rating" value="1" />
+				<label class = "full" for="star1" title="Sucks big time - 1 star"></label>
+			</div>	
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-12">
+			<div><hr/></div>
+			<div>
+				<button aria-expanded="false"  class="btn btn-outline-danger" 
+        			data-toggle="collapse" data-target="#boxnoidung">Mô tả đầy đủ</button>
+			</div>
+			<div class="collapse mt-4" id="boxnoidung" th:utext="${product.moTaDayDu}">
+				<div class="card card-body bg-warning">
+   	 			</div>
+			</div>
+		</div>
+	</div>
+	&nbsp;&nbsp;
+	<div th:replace="sanpham/images_carousel :: content"></div>	
+	<div th:replace="fragments :: modal_dialog"></div>	
+	<div th:replace="navigation :: footer_menu"></div>
+</div>
+
+<script type="text/javascript">
+	contextPath = "[[@{/}]]";
+	var crsfHeaderName = "[[${_csrf.headerName}]]";
+	var csrfValue = "[[${_csrf.token}]]";
+	var productId = "[[${product.maSanPham}]]";
+	$(document).ready(function() {
+		bigImage = $("#bigImage");
+
+		$(".image-thumbnail").mouseover(function() {
+			currentImageSource = $(this).attr("src");
+			currentImageIndex = $(this).attr("index");
+
+			bigImage.attr("src", currentImageSource);
+			bigImage.attr("index", currentImageIndex);
+		});
+
+		bigImage.on("click", function() {
+			$("#carouselModal").modal("show");
+			imageIndex = parseInt(bigImage.attr("index"));
+			$("#carouselExampleIndicators").carousel(imageIndex);
+		});
+	});
+	function calcRate(r) {
+ 	const f = ~~r,
+ 	id = 'star' + f + (r % f ? 'half' : '')
+ 	id && (document.getElementById(id).checked = !0)
+}
+</script>	
+<script th:src="@{/js/add_to_cart.js}"></script>
+<script th:src="@{/js/common_modal.js}"></script>
+<script th:src="@{/js/quantity_control.js}"></script>
+</body>
+</html> 

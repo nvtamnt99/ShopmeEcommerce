@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head />
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minium-scale=1.0">
+	
+	<title>Đăng ký thành công</title>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+<body>
+<div class="container-fluid text-center ">
+	<div>
+		<img th:src="@{/images/ShopmeAdminBig.png}" class="img-fluid" />
+	</div>
+		
+	<div class="border border-secondary rounded p-3">
+		<h2>Khách hàng đăng ký</h2>
+		<h4>Bạn đã đăng ký thành công với tư cách là khách hàng.</h4>
+		<p>Vui lòng kiểm tra email của bạn để xác minh tài khoản của bạn.</p>
+		<p><a th:href="@{/dangnhap}">Nhấn để đăng nhập</a></p>
+	</div>
+			
+	<footer>
+		<div class="text-center">
+			<p>Liên hệ hỗ trợ: nguyentruongnam69@gmail.com</p>
+		</div>
+	</footer>
+</div>	
+</body>
+</html>

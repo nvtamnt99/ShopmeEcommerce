@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Danh mục - Quản lý Admin', 'none')" />
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu"></div>
+	<div>
+		<h2>Quản lý danh mục</h2>
+		<a th:href="@{/danhmuc/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
+		<a th:href="@{/danhmuc/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>		
+	</div>
+	
+	<div th:replace="fragments :: search_form_and_message('/danhmuc/page/1')" />
+
+	<div class="full-details">
+		<table class="table table-bordered table-striped table-hover table-responsive-xl">
+			<thead class = "thead-dark">
+				<tr>
+					<th>Mã danh mục </th>
+					<th>Hình ảnh</th>
+					<th th:replace="fragments :: column_link('/danhmuc', 'ten', 'Tên danh mục', 'none')" />
+					<th class="hideable-column">Bí danh</th>
+					<th>Trạng thái</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="cat : ${listCategories}">
+					<td>[[${cat.maDanhMuc}]]</td>
+					<td>
+						<img th:src="@{${cat.duongDanHinhAnh}}" style="width: 100px" class="img-fluid" />
+					</td>
+					<td>[[${cat.ten}]]</td>
+					<td class="hideable-column">[[${cat.biDanh}]]</td>
+					<td>
+						<div th:replace="fragments :: status(${cat.trangThai}, 'danhmuc', '/danhmuc/' + ${cat.maDanhMuc})" />
+					</td>
+					<td>
+						<div th:replace="fragments :: edit('danhmuc', '/danhmuc/edit/' + ${cat.maDanhMuc})" />
+						&nbsp; 
+						<div th:replace="fragments :: delete('danhmuc', ${cat.maDanhMuc}, '/danhmuc/delete/' + ${cat.maDanhMuc}, ${!cat.hasDanhMucCon})" />	
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="less-details">
+		<div th:each="cat : ${listCategories}" class="row m-1">
+			<div class="col-4">
+				<img th:src="@{${cat.duongDanHinhAnh}}" style="width: 100px" class="img-fluid"/>			
+			</div>
+			<div class="col-8">
+				<div>[[${cat.ten}]]</div>
+				<div class="mt-2">
+					<td>
+						<div th:replace="fragments :: status(${cat.trangThai}, 'danhmuc', '/danhmuc/' + ${cat.maDanhMuc})" />
+					</td>
+					<td>
+						<div th:replace="fragments :: edit('danhmuc', '/danhmuc/edit/' + ${cat.maDanhMuc})" />
+					&nbsp;
+					<div th:replace="fragments :: delete('danhmuc', ${cat.maDanhMuc}, '/danhmuc/delete/' + ${cat.maDanhMuc}, ${!cat.hasDanhMucCon})" />
+					</td>
+				</div>
+			</div>
+			<div>&nbsp;</div>
+		</div>	
+	</div>
+	
+	<div th:if="${keyword != null}" class="text-center">
+		<span>Kết quả tìm kiếm không hiển thị các danh mục ở dạng phân cấp</span>
+		<div th:replace="fragments :: pagination('/danhmuc', 'danhmuc')"></div>
+	</div>
+
+	<th:block th:unless="${keyword != null}">
+	<div th:replace="fragments :: pagination('/danhmuc', 'top-level danhmuc')"></div>
+	</div>
+	
+	<div th:replace="modal_fragments :: confirm_modal" />
+	
+	<div th:replace="fragments :: footer"></div>
+</div>
+
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+	moduleURL = "[[@{/danhmuc}]]";
+
+	$(document).ready(function() {
+		$(".link-delete").on("click", function(e) {
+			e.preventDefault();
+			showDeleteConfirmModal($(this), 'danhmuc');
+		});
+	});
+</script>
+</script>
+</body>
+</html> 

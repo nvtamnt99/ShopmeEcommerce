@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content" th:remove="tag">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Mã đơn hàng:</label>
+            <div class="col-sm-10">
+              <input type="text" readonly class="form-control" th:value="${order.maDonHang}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Khách hàng:</label>
+            <div class="col-sm-10">
+              <input type="text" readonly class="form-control" th:value="${order.khachHang.HoTen}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Chi phí:</label>
+            <div class="col-sm-10">
+              <input type="text" th:field="*{chiPhi}" required class="form-control" />
+            </div>
+        </div>	
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tổng phụ:</label>
+            <div class="col-sm-10">
+              <input type="text" th:field="*{tongPhu}" required class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Giá vận chuyển:</label>
+            <div class="col-sm-10">
+              <input type="text" th:field="*{giaVanChuyen}" required class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Thuế:</label>
+            <div class="col-sm-10">
+              <input type="text" th:field="*{thue}" required class="form-control" />
+            </div>
+        </div>	
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tổng:</label>
+            <div class="col-sm-10">
+              <input type="text" th:field="*{tong}" required class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Phương thức thanh toán:</label>
+            <div class="col-sm-10">
+                  <select th:field="*{phuongThucThanhToan}" class="form-control" required style="max-width: 150px">
+                      <option th:each="pm : ${T(com.shopme.common.entity.PhuongThucThanhToan).values()}"
+                          th:value="${pm}" th:text="${pm}" />
+                  </select>
+            </div>
+        </div>	
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tình trạng:</label>
+            <div class="col-sm-10">
+                  <select th:field="*{tinhTrangDH}" class="form-control" required style="max-width: 150px">
+                      <option th:each="os : ${T(com.shopme.common.entity.TinhTrangDonHang).values()}"
+                          th:value="${os}" th:text="${os}" />
+                  </select>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

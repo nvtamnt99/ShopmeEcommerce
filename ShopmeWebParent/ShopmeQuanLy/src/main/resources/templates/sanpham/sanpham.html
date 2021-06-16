@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments :: page_head('Sản phẩm - Shopme Admin', 'none')" />
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu"></div>
+	<div>
+		<h2>Quản lý sản phẩm</h2>	
+		
+		<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+		<a style="text-decoration: none;" th:href="@{/sanpham/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
+		<a th:href="@{/sanpham/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+		</th:block>
+	</div>
+
+	<div>
+		<form th:action="@{/sanpham/page/1}" class="form-inline m-3" id="searchForm">
+			<input type="hidden" name="sortField" th:value="${sortField}" />
+			<input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+			Danh Mục:&nbsp;
+			<select class="form-control" name="categoryId" id="dropdownCategory">
+				<option value="0">Tất cả danh mục</option>
+
+				<th:block th:each="cat : ${listCategories}">
+				<option th:value="${cat.maDanhMuc}" th:selected="(${categoryId} == ${cat.maDanhMuc})">[[${cat.ten}]]</option>
+				</th:block>
+			</select>
+
+			&nbsp;Tìm kiếm:&nbsp;
+			<input type="search" name="keyword" th:value="${keyword}" class="form-control" required/>
+			&nbsp;&nbsp;
+			<button type="submit" class="btn btn-primary">
+				<i class="fas fa-search"></i>
+			</button>
+			&nbsp;&nbsp;
+			<button type="button" class="btn btn-secondary" onclick="clearFilter()">
+				<i class="fas fa-eraser"></i>
+			</button>
+		</form>
+
+		<div th:if="${message != null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>		
+	</div>
+
+
+	<div class="full-details">
+		<table class="table table-bordered table-striped table-hover table-responsive-xl">
+			<thead class="thead-dark">
+				<tr>
+					<th class="hideable-column"> 
+					<th th:replace="fragments :: column_link('/sanpham', 'maSanPham', 'Mã sản phẩm', 'tag')" />
+					</th>
+					
+					<th>Hình ảnh chính</th>
+					<th th:replace="fragments :: column_link('/sanpham', 'ten', 'Tên sản phẩm', 'none')" />
+					
+					<th class="hideable-column"> 
+					<th th:replace="fragments :: column_link('/sanpham', 'nhanhieu', 'Nhãn hiệu', 'tag')" />
+					</th>
+					
+					<th class="hideable-column"> 
+					<th th:replace="fragments :: column_link('/sanphan', 'danhmuc', 'Danh mục', 'tag')" />
+					</th>
+					
+					<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+					<th>Trạng thái</th>
+					</th:block>
+					
+					<th></th>
+				</tr>								
+			</thead>
+			<tbody>
+				<tr th:each="product : ${listProducts}">
+					<td class="hideable-column">[[${product.maSanPham}]]</td>
+					<td>
+						<img th:src="@{${product.duongDanHinhAnhChinh}}" style="width: 120px" class="img-fluid" />
+					</td>
+					<td>
+						<a style="text-decoration: none;" class="link-detail"
+							th:href="@{'/sanpham/detail/' + ${product.maSanPham}}"
+							th:title="${product.ten}"
+							>[[${product.tenNgan}]]</a>					
+
+					</td>
+					<td class="hideable-column">[[${product.nhanhieu.ten}]]</td>
+					<td class="hideable-column">[[${product.danhmuc.ten}]]</td>
+					
+					<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+					<td>
+						<div th:replace="fragments :: status(${product.trangThai}, 'sanpham', '/sanpham/' + ${product.maSanPham})" />
+					</td>
+					</th:block>
+					
+					<td>
+						<a style="text-decoration: none;" class="fas fa-file-alt fa-2x icon-green link-detail"
+							th:href="@{'/sanpham/detail/' + ${product.maSanPham}}"
+							title="Xem chi tiết của sản phẩm này"
+							></a>
+							
+						<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung', 'Nhân viên bán hàng')">
+						&nbsp; 	
+						<div th:replace="fragments :: edit('Sản phẩm', '/sanpham/edit/' + ${product.maSanPham})" />
+						</th:block>
+						
+						<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+						&nbsp; 
+						
+						<div th:replace="fragments :: delete('Sản phẩm', ${product.maSanPham}, '/sanpham/delete/' + ${product.maSanPham}, true)" />						
+						</th:block>
+					</td>					
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="less-details">
+		<div th:each="product : ${listProducts}" class="row m-1">
+			<div class="col-4">
+				<img th:src="@{${product.duongDanHinhAnhChinh}}" style="width: 80px" class="img-fluid" />			
+			</div>
+			<div class="col-8">
+				<div>
+					<a style="text-decoration: none;" class="link-detail" th:href="@{'/sanpham/detail/' + ${product.maSanPham}}">[[${product.tenNgan}]]</a>				
+				</div>
+				<div class="mt-2">
+					<a style="text-decoration: none;" class="fas fa-file-alt fa-2x icon-green link-detail"
+						th:href="@{'/sanpham/detail/' + ${product.maSanPham}}"
+						></a>
+
+					<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung', 'Nhân viên bán hàng')">
+					&nbsp; 	
+					<div th:replace="fragments :: edit('Sản phẩm', '/sanpham/edit/' + ${product.maSanPham})" />
+					</th:block>
+
+					<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
+					&nbsp; 
+					<div th:replace="fragments :: delete('Sản phẩm', ${product.maSanPham}, '/sanpham/delete/' + ${product.maSanPham}, true)" />
+					</th:block>		
+				</div>
+			</div>
+			<div>&nbsp;</div>
+		</div>	
+	</div>
+
+	<div th:replace="modal_fragments :: confirm_modal" />
+	
+	<div class="modal fade" id="detailModal">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+	
+	<div th:replace="fragments :: pagination('/sanpham', 'sanpham')"></div>
+
+	<div th:replace="fragments :: footer"></div>
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+	moduleURL = "[[@{/sanpham}]]";
+
+	$(document).ready(function() {
+		$(".link-delete").on("click", function(e) {
+			e.preventDefault();
+			showDeleteConfirmModal($(this), 'sanpham');
+		});
+		
+		$(".link-detail").on("click", function(e) {
+			e.preventDefault();
+			linkDetailURL = $(this).attr("href");
+			$("#detailModal").modal("show").find(".modal-content").load(linkDetailURL);
+		});
+		
+		$("#dropdownCategory").on("change", function() {
+			$("#searchForm").submit();
+		});
+		
+	});
+</script>
+</body>
+</html> 
