@@ -10,7 +10,8 @@
 		
 		<th:block sec:authorize="hasAnyAuthority('Quản trị viên', 'Người chỉnh sửa nội dung')">
 		<a style="text-decoration: none;" th:href="@{/sanpham/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
-		<a th:href="@{/sanpham/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+		<a style="text-decoration: none;" th:href="@{/sanpham/export/excel}" 
+				class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
 		</th:block>
 	</div>
 

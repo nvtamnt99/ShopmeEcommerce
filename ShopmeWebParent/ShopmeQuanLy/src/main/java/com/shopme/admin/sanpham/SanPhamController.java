@@ -3,6 +3,8 @@ package com.shopme.admin.sanpham;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -195,5 +197,13 @@ public class SanPhamController {
 
 			return "redirect:/sanpham";
 		}
+	}
+	
+	@GetMapping("/sanpham/export/excel")
+	public void exportToExcel(HttpServletResponse response) throws IOException {
+		List<SanPham> listProduct = sanPhamService.listAll();
+
+		SanPhamExcelExporter exporter = new SanPhamExcelExporter();
+		exporter.export(listProduct, response);
 	}
 }

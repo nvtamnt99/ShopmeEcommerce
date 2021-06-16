@@ -317,4 +317,13 @@ public class SanPham {
 		return "/p/" + this.biDanh + "/";
 	}
 	
+	@Transient
+	public String getNH() {
+		return nhanhieu.getTen();
+	}
+	
+	@Transient
+	public String getDM() {
+		return danhmuc.getTen();
+	}
 }
