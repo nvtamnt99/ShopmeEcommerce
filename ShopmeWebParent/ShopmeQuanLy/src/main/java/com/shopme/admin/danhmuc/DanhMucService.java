@@ -28,6 +28,10 @@ public class DanhMucService {
 	@Autowired
 	private DanhMucRepository repo;
 	
+	public List<DanhMuc> listAll() {
+		return (List<DanhMuc>) repo.findAll();
+	}
+	
 	public List<DanhMuc> listByPage(DanhMucPageInfo pageInfo, int pageNum, String sortDir,
 			 String keyword) {
 		Sort sort = Sort.by("ten");

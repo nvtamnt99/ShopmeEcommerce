@@ -1,6 +1,8 @@
 package com.shopme.common.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -76,7 +78,7 @@ public class NhanHieu {
 	public Set<DanhMuc> getDanhmuc() {
 		return danhmuc;
 	}
-
+	
 	public void setDanhmuc(Set<DanhMuc> danhmuc) {
 		this.danhmuc = danhmuc;
 	}

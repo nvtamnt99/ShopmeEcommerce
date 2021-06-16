@@ -191,6 +191,4 @@ public class DanhMuc {
 	public void setTatCaMaDanhMucCha(String tatCaMaDanhMucCha) {
 		this.tatCaMaDanhMucCha = tatCaMaDanhMucCha;
 	}
-	
-	
 }

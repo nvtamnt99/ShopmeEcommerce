@@ -153,4 +153,12 @@ public class DanhMucController {
 		DanhMucCsvExporter exporter = new DanhMucCsvExporter();
 		exporter.export(listCategories, response);
 	}
+	
+	@GetMapping("/danhmuc/export/excel")
+	public void exportToExcel(HttpServletResponse response) throws IOException {
+		List<DanhMuc> listCategory = service.listAll();
+
+		DanhMucExcelExporter exporter = new DanhMucExcelExporter();
+		exporter.export(listCategory, response);
+	}
 }
